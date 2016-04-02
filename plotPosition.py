@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Apr  2 14:23:04 2016
-
-@author: Klaudia
-"""
-
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -20,5 +13,5 @@ for k in np.arange(len(x1)):
         plt.xlabel("x")
         plt.ylabel("y")
         plt.legend()
-        plt.savefig("%s_3_body.png"%(str(k)))
+        plt.savefig("Plots/" + "%s_3_body.png"%(str(k/25)))
         plt.close()

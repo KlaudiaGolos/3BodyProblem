@@ -1,0 +1,3 @@
+This C++ project simulates the 3 body problem using the Verlet algorithm. The first step is made by the Euler algorithm. Initial conditions and physical constants are defined in ConstantsandUtilities.hpp . Note that the absolute path where you want to save data must be specified (in main.cpp).
+ 
+The script plotPosition.py plots positions of the 3 bodies saved in dataPositions.txt. It plots every 25th line of data and saves each plot (to find the naming convention, see plotPosition.py). Relative paths of dataPositions.txt and plots must be specified.
