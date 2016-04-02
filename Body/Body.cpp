@@ -1,70 +1,43 @@
-//
-//  Body.cpp
-//  3BodyProblem
-//
-//  Created by Klaudia Golos on 2016-03-21.
-//  Copyright © 2016 Klaudia Golos. All rights reserved.
-//
-
 #include "Body.hpp"
-#include "Point2D.hpp"
 #include "ConstantsAndUtilities.hpp"
-namespace{
-    Point2D calcPosEuler(Point2D positionNow, Point2D velocityNow,
-                         Point2D accFactor)
-    {
-        return positionNow + velocityNow * constants::dt
-                + 0.5 * accFactor * pow(constants::dt,2);
-    }
+#include <cmath>
+
+namespace
+{
     
-    Point2D calcPosVerlet(Point2D positionNow, Point2D positionLast,
-                          Point2D accFactor)
-    {
-        return  2 * positionNow - positionLast + accFactor * pow(constants::dt,2);
-    }
+Point2D calcPosEuler(Point2D positionNow,
+                     Point2D velocityNow,
+                     Point2D accFactor)
+{
+    return positionNow + velocityNow * constants::dt
+            + 0.5 * accFactor * pow(constants::dt,2);
+}
+    
+Point2D calcPosVerlet(Point2D positionNow,
+                      Point2D positionLast,
+                      Point2D accFactor)
+{
+    return  2 * positionNow - positionLast + accFactor * pow(constants::dt,2);
+}
+    
 }
 
-Body::Body(
-           Point2D positionLast,
+Body::Body(Point2D positionLast,
            Point2D velocityLast,
            Point2D positionNow,
            Point2D velocityNow,
            Point2D positionFuture,
-           Point2D velocityFuture
-) : positionLast_(positionLast),
-    velocityLast_(velocityLast),
-    positionNow_(positionNow),
-    velocityNow_(velocityNow),
-    positionFuture_(positionFuture),
-    velocityFuture_(velocityFuture){}
+           Point2D velocityFuture):
+									positionLast_(positionLast),
+									velocityLast_(velocityLast),
+									positionNow_(positionNow),
+									velocityNow_(velocityNow),
+                                    positionFuture_(positionFuture),
+									velocityFuture_(velocityFuture)
+{}
 
-Body::Body() : Body(Point2D(), Point2D(), Point2D(), Point2D(), Point2D(), Point2D()) {}
-void Body::makeFutureNow()
-{
-    positionLast_ = positionNow_;
-    positionNow_ = positionFuture_;
-    velocityLast_ = velocityNow_;
-    velocityNow_ = velocityFuture_;
-}
-Point2D Body::calcAccFactor(const Body &body1,const Body &body2)
-{
-    return  - constants::m * constants::G * (positionNow_ -
-            body1.positionNow_) / pow((positionNow_ -
-            body1.positionNow_).calcNorm(),3) - constants::m*constants::G *
-            (positionNow_ - body2.positionNow_) / pow((positionNow_ -
-            body2.positionNow_).calcNorm(),3);
-}
-
-std::ostream& operator << (std::ostream& out, const Body& body)
-{
-    out << body.positionNow_;
-    return out;
-}
-
-void Body::WriteToOStream(const Body &body1, const Body &body2,
-                          const Body &body3, std::ostream &ostr){
-    ostr << body1 << "\t" << body2 << "\t" << body3 << "\n";
-}
+Body::Body() : Body(Point2D(), Point2D(), Point2D(), Point2D(), Point2D(), Point2D())
+{}
 
 void Body::StepEuler(Body &body1, Body &body2, Body &body3)
 {
@@ -97,3 +70,37 @@ void Body::StepVerlet(Body &body1, Body &body2, Body &body3)
     body2.makeFutureNow();
     body3.makeFutureNow();
 }
+
+std::ostream& operator<<(std::ostream& out, const Body& body)
+{
+    out << body.positionNow_;
+    return out;
+}
+
+void Body::WriteToOStream(const Body &body1,
+                          const Body &body2,
+                          const Body &body3,
+                          std::ostream &ostr)
+{
+    ostr << body1 << "\t" << body2 << "\t" << body3 << "\n";
+}
+
+const std::string Body::HeaderString{"#x1\ty1\tx2\ty2\tx3\ty3\n"};
+
+Point2D Body::calcAccFactor(const Body &body1,const Body &body2) const
+{
+    return  - constants::m * constants::G * (positionNow_ -
+            body1.positionNow_) / pow((positionNow_ -
+            body1.positionNow_).norm(),3) - constants::m*constants::G *
+            (positionNow_ - body2.positionNow_) / pow((positionNow_ -
+            body2.positionNow_).norm(),3);
+}
+
+void Body::makeFutureNow()
+{
+    positionLast_ = positionNow_;
+    positionNow_ = positionFuture_;
+    velocityLast_ = velocityNow_;
+    velocityNow_ = velocityFuture_;
+}
+
