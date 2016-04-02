@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 x1, y1, x2, y2, x3, y3 = np.loadtxt("dataPositions.txt", unpack = True)
 
 for k in np.arange(len(x1)):
+    #plot every 25th line of data, skip first 100 points
     if(k%25 == 0 and k >= 100):
         plt.ioff()    
         plt.plot(x1[0:6300], y1[0:6300], "k--")        
@@ -13,5 +14,5 @@ for k in np.arange(len(x1)):
         plt.xlabel("x")
         plt.ylabel("y")
         plt.legend()
-        plt.savefig("Plots/" + "%s_3_body.png"%(str(k/25)))
+        plt.savefig("Plots/" + str(k).rjust(5, "0") + "_3BodyPositions.png")
         plt.close()
